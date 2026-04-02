@@ -509,8 +509,33 @@
         /* ── 2-column featured stats ── */
         .stats-grid--featured {
             grid-template-columns: repeat(2, 1fr);
-            max-width: 700px;
+            max-width: 900px;
             margin: 0 auto;
+            gap: 2rem;
+        }
+
+        .stats-grid--featured .stat-card {
+            padding: 2.5rem 2rem;
+        }
+
+        .stats-grid--featured .stat-value {
+            font-size: 3rem;
+        }
+
+        .stats-grid--featured .stat-label {
+            font-size: 1.1rem;
+            margin-top: 0.5rem;
+        }
+
+        .stats-grid--featured .stat-icon {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 1.2rem;
+        }
+
+        .stats-grid--featured .stat-icon svg {
+            width: 30px;
+            height: 30px;
         }
 
         .stats-grid--one {
