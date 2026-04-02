@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voltron6 | Hill Climb Racing 2 Gaming</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* ── Reset & Base ── */
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --neon-blue: #00f0ff;
+            --neon-purple: #b000ff;
+            --neon-pink: #ff0080;
+            --neon-green: #00ff88;
+            --dark-bg: #0a0a12;
+            --card-bg: rgba(15, 15, 30, 0.85);
+            --card-border: rgba(0, 240, 255, 0.15);
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background: var(--dark-bg);
+            color: #e0e0f0;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* ── Animated Background ── */
+        .bg-canvas {
+            position: fixed;
+            inset: 0;
+            z-index: -2;
+            background:
+                radial-gradient(ellipse at 20% 50%, rgba(176, 0, 255, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 20%, rgba(0, 240, 255, 0.06) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 80%, rgba(255, 0, 128, 0.05) 0%, transparent 50%),
+                var(--dark-bg);
+        }
+
+        /* Floating geometric shapes */
+        .geo-shapes {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .shape {
+            position: absolute;
+            border: 1px solid;
+            opacity: 0.07;
+            animation: float-shape 20s ease-in-out infinite;
+        }
+
+        .shape--1 {
+            width: 300px; height: 300px;
+            border-color: var(--neon-blue);
+            top: 10%; left: -5%;
+            transform: rotate(45deg);
+            animation-delay: 0s;
+        }
+
+        .shape--2 {
+            width: 200px; height: 200px;
+            border-color: var(--neon-purple);
+            top: 60%; right: -3%;
+            border-radius: 50%;
+            animation-delay: -7s;
+        }
+
+        .shape--3 {
+            width: 150px; height: 150px;
+            border-color: var(--neon-pink);
+            bottom: 10%; left: 20%;
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+            animation-delay: -13s;
+        }
+
+        .shape--4 {
+            width: 250px; height: 250px;
+            border-color: var(--neon-green);
+            top: 30%; right: 15%;
+            transform: rotate(30deg);
+            animation-delay: -4s;
+        }
+
+        .shape--5 {
+            width: 180px; height: 180px;
+            border-color: var(--neon-blue);
+            bottom: 30%; left: 50%;
+            border-radius: 50%;
+            animation-delay: -10s;
+        }
+
+        @keyframes float-shape {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            25% { transform: translateY(-30px) rotate(5deg); }
+            50% { transform: translateY(-10px) rotate(-3deg); }
+            75% { transform: translateY(-40px) rotate(2deg); }
+        }
+
+        /* ── Grid Lines Overlay ── */
+        .grid-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            pointer-events: none;
+            background-image:
+                linear-gradient(rgba(0, 240, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 240, 255, 0.02) 1px, transparent 1px);
+            background-size: 60px 60px;
+        }
+
+        /* ── Navigation ── */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 100;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(10, 10, 18, 0.9);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--card-border);
+            transition: all 0.3s ease;
+        }
+
+        nav.scrolled {
+            padding: 0.6rem 2rem;
+            box-shadow: 0 4px 30px rgba(0, 240, 255, 0.1);
+        }
+
+        .nav-logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 3px;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: #a0a0c0;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            transition: color 0.3s, text-shadow 0.3s;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0%;
+            height: 2px;
+            background: var(--neon-blue);
+            transition: width 0.3s;
+            box-shadow: 0 0 8px var(--neon-blue);
+        }
+
+        .nav-links a:hover {
+            color: var(--neon-blue);
+            text-shadow: 0 0 15px rgba(0, 240, 255, 0.5);
+        }
+
+        .nav-links a:hover::after { width: 100%; }
+
+        .nav-hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 5px;
+        }
+
+        .nav-hamburger span {
+            width: 28px;
+            height: 2px;
+            background: var(--neon-blue);
+            transition: all 0.3s;
+        }
+
+        /* ── Hero Section ── */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 2rem;
+            position: relative;
+        }
+
+        .hero-content { max-width: 800px; }
+
+        .hero-badge {
+            display: inline-block;
+            padding: 0.4rem 1.2rem;
+            border: 1px solid var(--neon-blue);
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--neon-blue);
+            margin-bottom: 1.5rem;
+            animation: pulse-border 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-border {
+            0%, 100% { box-shadow: 0 0 5px rgba(0, 240, 255, 0.3); }
+            50% { box-shadow: 0 0 20px rgba(0, 240, 255, 0.6); }
+        }
+
+        .hero h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #ffffff 0%, var(--neon-blue) 50%, var(--neon-purple) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradient-shift 4s ease-in-out infinite;
+            background-size: 200% 200%;
+        }
+
+        @keyframes gradient-shift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            color: #8888aa;
+            margin-bottom: 2.5rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.9rem 2rem;
+            border-radius: 8px;
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 700;
+            font-size: 1rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        .btn--primary {
+            background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple));
+            color: #fff;
+            box-shadow: 0 4px 20px rgba(0, 240, 255, 0.3);
+        }
+
+        .btn--primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 30px rgba(0, 240, 255, 0.5);
+        }
+
+        .btn--outline {
+            background: transparent;
+            color: var(--neon-blue);
+            border: 1px solid var(--neon-blue);
+        }
+
+        .btn--outline:hover {
+            background: rgba(0, 240, 255, 0.1);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(0, 240, 255, 0.2);
+        }
+
+        /* ── Section Styles ── */
+        section {
+            padding: 6rem 2rem;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-tag {
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--neon-purple);
+            margin-bottom: 0.5rem;
+        }
+
+        .section-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(1.8rem, 4vw, 2.5rem);
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .section-title span {
+            background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .divider {
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
+            margin: 1rem auto 0;
+            border-radius: 2px;
+        }
+
+        /* ── About Section ── */
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .about-visual {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .about-icon-wrapper {
+            width: 280px;
+            height: 280px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, rgba(0, 240, 255, 0.1), rgba(176, 0, 255, 0.1));
+            border: 1px solid var(--card-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .about-icon-wrapper::before {
+            content: '';
+            position: absolute;
+            inset: -50%;
+            background: conic-gradient(from 0deg, transparent, var(--neon-blue), transparent, var(--neon-purple), transparent);
+            animation: rotate-border 6s linear infinite;
+            opacity: 0.3;
+        }
+
+        @keyframes rotate-border {
+            to { transform: rotate(360deg); }
+        }
+
+        .about-icon-wrapper svg {
+            position: relative;
+            z-index: 1;
+        }
+
+        .about-text h3 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.6rem;
+            margin-bottom: 1rem;
+            color: #fff;
+        }
+
+        .about-text p {
+            color: #9999bb;
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+        }
+
+        .about-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .about-tag {
+            padding: 0.3rem 0.8rem;
+            background: rgba(0, 240, 255, 0.08);
+            border: 1px solid rgba(0, 240, 255, 0.2);
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--neon-blue);
+            letter-spacing: 1px;
+        }
+
+        /* ── Stats Section ── */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 40px rgba(0, 240, 255, 0.15);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            margin: 0 auto 1rem;
+            background: rgba(0, 240, 255, 0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .stat-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--neon-blue), var(--neon-green));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            color: #8888aa;
+            font-size: 0.95rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-top: 0.3rem;
+        }
+
+        /* ── Achievements Section ── */
+        .achievements-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .achievement {
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: transform 0.3s, border-color 0.3s;
+        }
+
+        .achievement:hover {
+            transform: translateX(5px);
+            border-color: var(--neon-blue);
+        }
+
+        .achievement-icon {
+            width: 50px;
+            height: 50px;
+            min-width: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .achievement-icon--gold { background: linear-gradient(135deg, #ffd700, #ff8c00); }
+        .achievement-icon--silver { background: linear-gradient(135deg, #c0c0c0, #808080); }
+        .achievement-icon--bronze { background: linear-gradient(135deg, #cd7f32, #8b4513); }
+        .achievement-icon--special { background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple)); }
+
+        .achievement-info h4 {
+            color: #fff;
+            font-size: 1rem;
+            font-weight: 700;
+        }
+
+        .achievement-info p {
+            color: #8888aa;
+            font-size: 0.85rem;
+            margin-top: 0.2rem;
+        }
+
+        /* ── YouTube Section ── */
+        .youtube-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 3rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .youtube-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #ff0000, #ff4444, #ff0000);
+        }
+
+        .youtube-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1.5rem;
+            background: rgba(255, 0, 0, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .youtube-card h3 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            color: #fff;
+            margin-bottom: 1rem;
+        }
+
+        .youtube-card p {
+            color: #9999bb;
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto 2rem;
+        }
+
+        .btn--youtube {
+            background: #ff0000;
+            color: #fff;
+            box-shadow: 0 4px 20px rgba(255, 0, 0, 0.3);
+        }
+
+        .btn--youtube:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 30px rgba(255, 0, 0, 0.5);
+            background: #cc0000;
+        }
+
+        /* ── Socials/Connect Section ── */
+        .socials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .social-card {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 14px;
+            padding: 1.5rem;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.3s;
+        }
+
+        .social-card:hover {
+            transform: translateY(-3px);
+            border-color: var(--neon-blue);
+            box-shadow: 0 8px 30px rgba(0, 240, 255, 0.15);
+        }
+
+        .social-icon {
+            width: 50px;
+            height: 50px;
+            min-width: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .social-icon--youtube { background: rgba(255, 0, 0, 0.15); }
+        .social-icon--discord { background: rgba(88, 101, 242, 0.15); }
+
+        .social-info h4 {
+            color: #fff;
+            font-size: 1rem;
+            font-weight: 700;
+        }
+
+        .social-info p {
+            color: #8888aa;
+            font-size: 0.85rem;
+        }
+
+        /* ── Footer ── */
+        footer {
+            text-align: center;
+            padding: 3rem 2rem;
+            border-top: 1px solid var(--card-border);
+            color: #555577;
+            font-size: 0.9rem;
+        }
+
+        footer .footer-logo {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            font-size: 1.2rem;
+            background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        /* ── Scroll Reveal ── */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .nav-links.open {
+                display: flex;
+                flex-direction: column;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: rgba(10, 10, 18, 0.98);
+                padding: 1.5rem 2rem;
+                border-bottom: 1px solid var(--card-border);
+                gap: 1rem;
+            }
+            .nav-hamburger { display: flex; }
+            .about-grid { grid-template-columns: 1fr; text-align: center; }
+            .about-visual { order: -1; }
+            .about-tags { justify-content: center; }
+            .hero h1 { font-size: clamp(2.2rem, 8vw, 4rem); }
+            section { padding: 4rem 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Effects -->
+    <div class="bg-canvas"></div>
+    <div class="grid-overlay"></div>
+    <div class="geo-shapes">
+        <div class="shape shape--1"></div>
+        <div class="shape shape--2"></div>
+        <div class="shape shape--3"></div>
+        <div class="shape shape--4"></div>
+        <div class="shape shape--5"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav id="navbar">
+        <a href="#" class="nav-logo">VOLTRON6</a>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="#about">About</a></li>
+            <li><a href="#stats">Stats</a></li>
+            <li><a href="#achievements">Achievements</a></li>
+            <li><a href="#youtube">YouTube</a></li>
+            <li><a href="#connect">Connect</a></li>
+        </ul>
+        <button class="nav-hamburger" id="hamburger" aria-label="Menu">
+            <span></span><span></span><span></span>
+        </button>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-badge">Hill Climb Racing 2 Player</div>
+            <h1>VOLTRON6</h1>
+            <p>Racing through hills, climbing the ranks, and sharing the journey on YouTube. Welcome to my world.</p>
+            <div class="hero-buttons">
+                <a href="https://www.youtube.com/@Voltron6-r5f" target="_blank" class="btn btn--primary">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814z"/><polygon fill="#0a0a12" points="9.545,15.568 15.818,12 9.545,8.432"/></svg>
+                    Watch on YouTube
+                </a>
+                <a href="https://discord.gg/zj9WB72MZa" target="_blank" class="btn btn--outline">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+                    Join Discord
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about">
+        <div class="section-header reveal">
+            <p class="section-tag">Who am I</p>
+            <h2 class="section-title">About <span>Voltron6</span></h2>
+            <div class="divider"></div>
+        </div>
+        <div class="about-grid reveal">
+            <div class="about-visual">
+                <div class="about-icon-wrapper">
+                    <svg width="120" height="120" viewBox="0 0 120 120" fill="none">
+                        <circle cx="60" cy="60" r="55" stroke="url(#aboutGrad)" stroke-width="2" stroke-dasharray="8 4"/>
+                        <path d="M35 75 L45 50 L55 60 L65 40 L75 55 L85 35" stroke="var(--neon-blue)" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                        <circle cx="85" cy="35" r="5" fill="var(--neon-purple)"/>
+                        <path d="M30 80 Q60 65 90 80" stroke="var(--neon-green)" stroke-width="2" fill="none" opacity="0.5"/>
+                        <defs><linearGradient id="aboutGrad" x1="0" y1="0" x2="120" y2="120"><stop offset="0%" stop-color="var(--neon-blue)"/><stop offset="100%" stop-color="var(--neon-purple)"/></linearGradient></defs>
+                    </svg>
+                </div>
+            </div>
+            <div class="about-text">
+                <h3>Hill Climb Racer &amp; Content Creator</h3>
+                <p>Hey there! I'm Voltron6 — a passionate Hill Climb Racing 2 player and YouTuber. I've been pushing the limits of what's possible on every map, chasing records, and sharing my runs with the community.</p>
+                <p>Whether it's perfecting a hill climb run, unlocking new vehicles, or competing in team events, I'm always grinding. Follow along on YouTube to see it all!</p>
+                <div class="about-tags">
+                    <span class="about-tag">Hill Climb Racing 2</span>
+                    <span class="about-tag">YouTube Creator</span>
+                    <span class="about-tag">Racing Games</span>
+                    <span class="about-tag">Community</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section id="stats">
+        <div class="section-header reveal">
+            <p class="section-tag">By the Numbers</p>
+            <h2 class="section-title">Gaming <span>Stats</span></h2>
+            <div class="divider"></div>
+        </div>
+        <div class="stats-grid reveal">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--neon-blue)" stroke-width="2"><path d="M12 20V10M18 20V4M6 20v-4"/></svg>
+                </div>
+                <div class="stat-value" data-target="5000">0</div>
+                <div class="stat-label">Total Races</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--neon-blue)" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                </div>
+                <div class="stat-value" data-target="150">0</div>
+                <div class="stat-label">Trophies Won</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--neon-blue)" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><polyline points="17 2 12 7 7 2"/></svg>
+                </div>
+                <div class="stat-value" data-target="25">0</div>
+                <div class="stat-label">Vehicles Unlocked</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--neon-blue)" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                </div>
+                <div class="stat-value" data-target="500">0</div>
+                <div class="stat-label">Hours Played</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Achievements Section -->
+    <section id="achievements">
+        <div class="section-header reveal">
+            <p class="section-tag">Hall of Fame</p>
+            <h2 class="section-title">My <span>Achievements</span></h2>
+            <div class="divider"></div>
+        </div>
+        <div class="achievements-list reveal">
+            <div class="achievement">
+                <div class="achievement-icon achievement-icon--gold">&#127942;</div>
+                <div class="achievement-info">
+                    <h4>Top Racer</h4>
+                    <p>Reached the top of the leaderboards in Adventure mode</p>
+                </div>
+            </div>
+            <div class="achievement">
+                <div class="achievement-icon achievement-icon--special">&#9889;</div>
+                <div class="achievement-info">
+                    <h4>Speed Demon</h4>
+                    <p>Set a personal best record time on Countryside</p>
+                </div>
+            </div>
+            <div class="achievement">
+                <div class="achievement-icon achievement-icon--gold">&#127775;</div>
+                <div class="achievement-info">
+                    <h4>Collector</h4>
+                    <p>Unlocked every legendary vehicle part</p>
+                </div>
+            </div>
+            <div class="achievement">
+                <div class="achievement-icon achievement-icon--silver">&#128293;</div>
+                <div class="achievement-info">
+                    <h4>Team Player</h4>
+                    <p>Led team to victory in multiple Team Events</p>
+                </div>
+            </div>
+            <div class="achievement">
+                <div class="achievement-icon achievement-icon--bronze">&#127947;</div>
+                <div class="achievement-info">
+                    <h4>Endurance King</h4>
+                    <p>Completed a 500+ race marathon in one season</p>
+                </div>
+            </div>
+            <div class="achievement">
+                <div class="achievement-icon achievement-icon--special">&#128640;</div>
+                <div class="achievement-info">
+                    <h4>Content Creator</h4>
+                    <p>Built a YouTube community around HCR2 content</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- YouTube Section -->
+    <section id="youtube">
+        <div class="section-header reveal">
+            <p class="section-tag">Watch & Subscribe</p>
+            <h2 class="section-title">My <span>YouTube</span> Channel</h2>
+            <div class="divider"></div>
+        </div>
+        <div class="youtube-card reveal">
+            <div class="youtube-icon">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="#ff0000"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814z"/><polygon fill="#fff" points="9.545,15.568 15.818,12 9.545,8.432"/></svg>
+            </div>
+            <h3>Voltron6</h3>
+            <p>Hill Climb Racing 2 gameplay, tips, records, and more. Join the ride and don't forget to subscribe!</p>
+            <a href="https://www.youtube.com/@Voltron6-r5f" target="_blank" class="btn btn--youtube">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814z"/><polygon fill="#0a0a12" points="9.545,15.568 15.818,12 9.545,8.432"/></svg>
+                Subscribe Now
+            </a>
+        </div>
+    </section>
+
+    <!-- Connect Section -->
+    <section id="connect">
+        <div class="section-header reveal">
+            <p class="section-tag">Let's Connect</p>
+            <h2 class="section-title">Join the <span>Community</span></h2>
+            <div class="divider"></div>
+        </div>
+        <div class="socials-grid reveal">
+            <a href="https://www.youtube.com/@Voltron6-r5f" target="_blank" class="social-card">
+                <div class="social-icon social-icon--youtube">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="#ff0000"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814z"/><polygon fill="#fff" points="9.545,15.568 15.818,12 9.545,8.432"/></svg>
+                </div>
+                <div class="social-info">
+                    <h4>YouTube</h4>
+                    <p>@Voltron6-r5f</p>
+                </div>
+            </a>
+            <a href="https://discord.gg/zj9WB72MZa" target="_blank" class="social-card">
+                <div class="social-icon social-icon--discord">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="#5865F2"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+                </div>
+                <div class="social-info">
+                    <h4>Discord</h4>
+                    <p>Join the server</p>
+                </div>
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-logo">VOLTRON6</div>
+        <p>&copy; 2026 Voltron6. All rights reserved.</p>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // Navbar scroll effect
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            navbar.classList.toggle('scrolled', window.scrollY > 50);
+        });
+
+        // Mobile menu toggle
+        const hamburger = document.getElementById('hamburger');
+        const navLinks = document.getElementById('navLinks');
+        hamburger.addEventListener('click', () => {
+            navLinks.classList.toggle('open');
+        });
+        navLinks.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => navLinks.classList.remove('open'));
+        });
+
+        // Scroll reveal
+        const revealElements = document.querySelectorAll('.reveal');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.15 });
+        revealElements.forEach(el => observer.observe(el));
+
+        // Animated stat counters
+        const statValues = document.querySelectorAll('.stat-value');
+        const statsObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const el = entry.target;
+                    const target = parseInt(el.getAttribute('data-target'));
+                    let current = 0;
+                    const increment = target / 60;
+                    const timer = setInterval(() => {
+                        current += increment;
+                        if (current >= target) {
+                            el.textContent = target.toLocaleString();
+                            clearInterval(timer);
+                        } else {
+                            el.textContent = Math.floor(current).toLocaleString();
+                        }
+                    }, 25);
+                    statsObserver.unobserve(el);
+                }
+            });
+        }, { threshold: 0.5 });
+        statValues.forEach(el => statsObserver.observe(el));
+    </script>
+</body>
+</html>
