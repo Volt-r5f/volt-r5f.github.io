@@ -588,20 +588,34 @@
         }
 
         /* ── Achievements Section ── */
+        .achievements-category {
+            margin-bottom: 2rem;
+        }
+        .achievements-category-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--neon-blue);
+            margin: 2.5rem 0 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid rgba(0, 198, 255, 0.2);
+        }
         .achievements-list {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
+            gap: 1rem;
         }
 
         .achievement {
             display: flex;
             align-items: center;
-            gap: 1.2rem;
+            gap: 1rem;
             background: var(--card-bg);
             border: 1px solid var(--card-border);
             border-radius: 12px;
-            padding: 1.5rem;
+            padding: 1rem 1.2rem;
             transition: transform 0.3s, border-color 0.3s;
         }
 
@@ -610,31 +624,23 @@
             border-color: var(--neon-blue);
         }
 
-        .achievement-icon {
-            width: 50px;
-            height: 50px;
-            min-width: 50px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
+        .achievement-badge {
+            width: 52px;
+            height: 52px;
+            min-width: 52px;
+            border-radius: 10px;
+            object-fit: contain;
         }
-
-        .achievement-icon--gold { background: linear-gradient(135deg, #ffd700, #ff8c00); }
-        .achievement-icon--silver { background: linear-gradient(135deg, #c0c0c0, #808080); }
-        .achievement-icon--bronze { background: linear-gradient(135deg, #cd7f32, #8b4513); }
-        .achievement-icon--special { background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple)); }
 
         .achievement-info h4 {
             color: #fff;
-            font-size: 1rem;
+            font-size: 0.95rem;
             font-weight: 700;
         }
 
         .achievement-info p {
             color: #8888aa;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             margin-top: 0.2rem;
         }
 
@@ -903,7 +909,7 @@
                 <div class="stat-icon">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--neon-blue)" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
                 </div>
-                <div class="stat-value" data-target="122" data-formatted="121.8M m">0</div>
+                <div class="stat-value" data-target="122" data-formatted="121.8M">0</div>
                 <div class="stat-label">Total Distance</div>
             </div>
             <div class="stat-card">
@@ -1053,62 +1059,127 @@
             <h2 class="section-title">My <span>Achievements</span></h2>
             <div class="divider"></div>
         </div>
-        <div class="achievements-list reveal">
-            <div class="achievement">
-                <div class="achievement-icon achievement-icon--gold">&#127942;</div>
-                <div class="achievement-info">
-                    <h4>Legendary 304</h4>
-                    <p>Cup Points: 3,088,903 — reached Legendary tier</p>
-                </div>
+        <!-- Racing -->
+        <div class="achievements-category reveal">
+            <h3 class="achievements-category-title">Racing</h3>
+            <div class="achievements-list">
+                <div class="achievement"><img class="achievement-badge" src="badges/made_the_grade.png" alt="Made The Grade"><div class="achievement-info"><h4>Made The Grade</h4><p>Qualify for racing</p></div></div>
+                <div class="achievement"><img class="achievement-badge" src="badges/warmed_up.png" alt="Warmed Up!"><div class="achievement-info"><h4>Warmed Up!</h4><p>Win 10 races</p></div></div>
+                <div class="achievement"><img class="achievement-badge" src="badges/unstoppable.png" alt="Unstoppable!"><div class="achievement-info"><h4>Unstoppable!</h4><p>Win 100 races</p></div></div>
+                <div class="achievement"><img class="achievement-badge" src="badges/losing_is_for_losers.png" alt="Losing is for Losers"><div class="achievement-info"><h4>Losing is for Losers</h4><p>Win 1,000 races</p></div></div>
+                <div class="achievement"><img class="achievement-badge" src="badges/racing_god.png" alt="Racing God"><div class="achievement-info"><h4>Racing God</h4><p>Win 10,000 races</p></div></div>
             </div>
-            <div class="achievement">
-                <div class="achievement-icon achievement-icon--special">&#9889;</div>
-                <div class="achievement-info">
-                    <h4>Divine III Season</h4>
-                    <p>Season Points: 47,902 — Best Season: 195,300</p>
-                </div>
+        </div>
+
+        <!-- Cups -->
+        <div class="achievements-category reveal">
+            <h3 class="achievements-category-title">Cups</h3>
+            <div class="achievements-list">
+                <div class="achievement"><img class="achievement-badge" src="badges/nice_cups.png" alt="Nice Cups!"><div class="achievement-info"><h4>Nice Cups!</h4><p>Win 5 cups</p></div></div>
+                <div class="achievement"><img class="achievement-badge" src="badges/how_many_cups.png" alt="How Many Cups Is Enough?"><div class="achievement-info"><h4>How Many Cups Is Enough?</h4><p>Win 50 cups</p></div></div>
+                <div class="achievement"><img class="achievement-badge" src="badges/need_new_cup_cabinet.png" alt="I Need a New Cup Cabinet.."><div class="achievement-info"><h4>I Need a New Cup Cabinet..</h4><p>Win 500 cups</p></div></div>
+                <div class="achievement"><img class="achievement-badge" src="badges/all_cups_belong.png" alt="All Your Cups Are Belong to Me!"><div class="achievement-info"><h4>All Your Cups Are Belong to Me!</h4><p>Win 5,000 cups</p></div></div>
             </div>
-            <div class="achievement">
-                <div class="achievement-icon achievement-icon--gold">&#127775;</div>
-                <div class="achievement-info">
-                    <h4>Canyoneer</h4>
-                    <p>Adventurer Rank: 3,962,957 — conquered every canyon</p>
-                </div>
+        </div>
+
+        <!-- Challenges -->
+        <div class="achievements-category reveal">
+            <h3 class="achievements-category-title">Challenges</h3>
+            <div class="achievements-list">
+                <div class="achievement"><img class="achievement-badge" src="badges/challenger.png" alt="Challenger"><div class="achievement-info"><h4>Challenger</h4><p>Send a challenge</p></div></div>
+                <div class="achievement"><img class="achievement-badge" src="badges/challenge_accepted.png" alt="Challenge Accepted"><div class="achievement-info"><h4>Challenge Accepted</h4><p>Win a challenge</p></div></div>
+                <div class="achievement"><img class="achievement-badge" src="badges/bring_it_on.png" alt="Bring It On"><div class="achievement-info"><h4>Bring It On</h4><p>Win 20 challenges</p></div></div>
+                <div class="achievement"><img class="achievement-badge" src="badges/challenge_champ.png" alt="Challenge Champ"><div class="achievement-info"><h4>Challenge Champ</h4><p>Win 100 challenges</p></div></div>
             </div>
-            <div class="achievement">
-                <div class="achievement-icon achievement-icon--special">&#128170;</div>
-                <div class="achievement-info">
-                    <h4>68/68 Achievements</h4>
-                    <p>100% completion — every single achievement unlocked</p>
-                </div>
+        </div>
+
+        <!-- Distance -->
+        <div class="achievements-category reveal">
+            <h3 class="achievements-category-title">Distance</h3>
+            <div class="achievements-list">
+                <div class="achievement"><img class="achievement-badge" src="badges/water_run.png" alt="Water Run"><div class="achievement-info"><h4>Water Run</h4><p>Drive 10,000 meters</p></div></div>
+                <div class="achievement"><img class="achievement-badge" src="badges/milk_run.png" alt="Milk Run"><div class="achievement-info"><h4>Milk Run</h4><p>Drive 100,000 meters</p></div></div>
+                <div class="achievement"><img class="achievement-badge" src="badges/cant_run_that_far.png" alt="Can't Run That Far, So I Drive"><div class="achievement-info"><h4>Can't Run That Far, So I Drive</h4><p>Drive 1,000,000 meters</p></div></div>
             </div>
-            <div class="achievement">
-                <div class="achievement-icon achievement-icon--gold">&#127775;</div>
-                <div class="achievement-info">
-                    <h4>Full Explorer</h4>
-                    <p>22/22 Adventures &amp; 73/73 Cups unlocked</p>
-                </div>
+        </div>
+
+        <!-- Ranks -->
+        <div class="achievements-category reveal">
+            <h3 class="achievements-category-title">Ranks</h3>
+            <div class="achievements-list">
+                <div class="achievement"><img class="achievement-badge" src="badges/just_getting_started.png" alt="Just Getting Started"><div class="achievement-info"><h4>Just Getting Started</h4><p>Qualify for Bronze I</p></div></div>
+                <div class="achievement"><img class="achievement-badge" src="badges/cant_go_wrong.png" alt="Can't Go Wrong With More Bronze"><div class="achievement-info"><h4>Can't Go Wrong With More Bronze</h4><p>Qualify for Bronze II</p></div></div>
+                <div class="achievement"><img class="achievement-badge" src="badges/price_of_bronze.png" alt="Price of Bronze Is Up! Sell! Sell!"><div class="achievement-info"><h4>Price of Bronze Is Up! Sell! Sell!</h4><p>Qualify for Bronze III</p></div></div>
+                <div class="achievement"><img class="achievement-badge" src="badges/shiny.png" alt="Shiny!"><div class="achievement-info"><h4>Shiny!</h4><p>Qualify for Silver I</p></div></div>
+                <div class="achievement"><img class="achievement-badge" src="badges/making_it_look_easy.png" alt="Making It Look Easy"><div class="achievement-info"><h4>Making It Look Easy</h4><p>Qualify for Silver II</p></div></div>
+                <div class="achievement"><img class="achievement-badge" src="badges/silvertongue.png" alt="Silvertongue"><div class="achievement-info"><h4>Silvertongue</h4><p>Qualify for Silver III</p></div></div>
+                <div class="achievement"><img class="achievement-badge" src="badges/golden_tooth.png" alt="Time to Get a Golden Tooth"><div class="achievement-info"><h4>Time to Get a Golden Tooth</h4><p>Qualify for Gold I</p></div></div>
+                <div class="achievement"><img class="achievement-badge" src="badges/golden_car.png" alt="Or Maybe a Golden Car?"><div class="achievement-info"><h4>Or Maybe a Golden Car?</h4><p>Qualify for Gold II</p></div></div>
+                <div class="achievement"><img class="achievement-badge" src="badges/castle_of_gold.png" alt="A Castle Made of Gold!"><div class="achievement-info"><h4>A Castle Made of Gold!</h4><p>Qualify for Gold III</p></div></div>
+                <div class="achievement"><img class="achievement-badge" src="badges/great_things.png" alt="I Expect Great Things Here"><div class="achievement-info"><h4>I Expect Great Things Here</h4><p>Qualify for Platinum I</p></div></div>
+                <div class="achievement"><img class="achievement-badge" src="badges/platinum_times_2.png" alt="Platinum Times 2 Equals Progress!"><div class="achievement-info"><h4>Platinum Times 2 Equals Progress!</h4><p>Qualify for Platinum II</p></div></div>
+                <div class="achievement"><img class="achievement-badge" src="badges/platinum_better.png" alt="My Platinum Is Better Than Yours"><div class="achievement-info"><h4>My Platinum Is Better Than Yours</h4><p>Qualify for Platinum III</p></div></div>
+                <div class="achievement"><img class="achievement-badge" src="badges/looking_up.png" alt="Things Are Looking Up!"><div class="achievement-info"><h4>Things Are Looking Up!</h4><p>Qualify for Diamond I</p></div></div>
+                <div class="achievement"><img class="achievement-badge" src="badges/cash_in_diamonds.png" alt="Where Can I Cash In All These Diamonds?"><div class="achievement-info"><h4>Where Can I Cash In All These Diamonds?</h4><p>Qualify for Diamond II</p></div></div>
+                <div class="achievement"><img class="achievement-badge" src="badges/diamond_shows_i_care.png" alt="Diamond Shows I Care"><div class="achievement-info"><h4>Diamond Shows I Care</h4><p>Qualify for Diamond III</p></div></div>
+                <div class="achievement"><img class="achievement-badge" src="badges/i_am_legend.png" alt="I Am Legend"><div class="achievement-info"><h4>I Am Legend</h4><p>Qualify for Legendary</p></div></div>
             </div>
-            <div class="achievement">
-                <div class="achievement-icon achievement-icon--silver">&#128293;</div>
-                <div class="achievement-info">
-                    <h4>Event Warrior</h4>
-                    <p>370 events joined — 29,605 event races, 1,402 won</p>
-                </div>
+        </div>
+
+        <!-- Flips -->
+        <div class="achievements-category reveal">
+            <h3 class="achievements-category-title">Flips</h3>
+            <div class="achievements-list">
+                <div class="achievement"><img class="achievement-badge" src="badges/earning_fliplegs.png" alt="Earning Them Fliplegs!"><div class="achievement-info"><h4>Earning Them Fliplegs!</h4><p>Make 10 flips</p></div></div>
+                <div class="achievement"><img class="achievement-badge" src="badges/post_video_flips.png" alt="Should Post a Video of These Flips"><div class="achievement-info"><h4>Should Post a Video of These Flips</h4><p>Make 50 flips</p></div></div>
+                <div class="achievement"><img class="achievement-badge" src="badges/going_to_throw_up.png" alt="I'm Going to Throw Up"><div class="achievement-info"><h4>I'm Going to Throw Up</h4><p>Make 100 flips</p></div></div>
+                <div class="achievement"><img class="achievement-badge" src="badges/they_call_me_rotator.png" alt="They Call Me the Rotator"><div class="achievement-info"><h4>They Call Me the Rotator</h4><p>10 backflips</p></div></div>
+                <div class="achievement"><img class="achievement-badge" src="badges/backwardsman.png" alt="I'm Backwardsman, Backwards Man"><div class="achievement-info"><h4>I'm Backwardsman, Backwards Man</h4><p>50 backflips</p></div></div>
+                <div class="achievement"><img class="achievement-badge" src="badges/go_back_fast.png" alt="I Go Back as Fast as I Can"><div class="achievement-info"><h4>I Go Back as Fast as I Can</h4><p>100 backflips</p></div></div>
+                <div class="achievement"><img class="achievement-badge" src="badges/that_hurt.png" alt="That Hurt!"><div class="achievement-info"><h4>That Hurt!</h4><p>5 neckflips</p></div></div>
+                <div class="achievement"><img class="achievement-badge" src="badges/not_healthy.png" alt="I Don't Think This Is Healthy"><div class="achievement-info"><h4>I Don't Think This Is Healthy</h4><p>30 neckflips</p></div></div>
+                <div class="achievement"><img class="achievement-badge" src="badges/im_immortal.png" alt="I'm Immortal!"><div class="achievement-info"><h4>I'm Immortal!</h4><p>50 neckflips</p></div></div>
             </div>
-            <div class="achievement">
-                <div class="achievement-icon achievement-icon--bronze">&#127947;</div>
-                <div class="achievement-info">
-                    <h4>Flip Master</h4>
-                    <p>26,886 backflips, 115,278 front flips, 9,852 neck flips</p>
-                </div>
+        </div>
+
+        <!-- Vehicles & Tuning -->
+        <div class="achievements-category reveal">
+            <h3 class="achievements-category-title">Vehicles &amp; Tuning</h3>
+            <div class="achievements-list">
+                <div class="achievement"><img class="achievement-badge" src="badges/car_connoisseur.png" alt="Car Connoisseur"><div class="achievement-info"><h4>Car Connoisseur</h4><p>Purchase all vehicles</p></div></div>
+                <div class="achievement"><img class="achievement-badge" src="badges/need_more_cups.png" alt="I Need More Cups!"><div class="achievement-info"><h4>I Need More Cups!</h4><p>Unlock all cups</p></div></div>
+                <div class="achievement"><img class="achievement-badge" src="badges/driving_no_bill.png" alt="Driving Where No Bill has Gone Before!"><div class="achievement-info"><h4>Driving Where No Bill has Gone Before!</h4><p>Unlock all adventure tracks</p></div></div>
+                <div class="achievement"><img class="achievement-badge" src="badges/totally_pimped.png" alt="Totally Pimped Out"><div class="achievement-info"><h4>Totally Pimped Out</h4><p>Fully upgrade a vehicle</p></div></div>
+                <div class="achievement"><img class="achievement-badge" src="badges/double_the_fun.png" alt="Double the Fun"><div class="achievement-info"><h4>Double the Fun</h4><p>Equip two tuning parts to a vehicle</p></div></div>
+                <div class="achievement"><img class="achievement-badge" src="badges/release_potential.png" alt="Release the Full Potential"><div class="achievement-info"><h4>Release the Full Potential</h4><p>Equip a tuning part to all slots</p></div></div>
+                <div class="achievement"><img class="achievement-badge" src="badges/parts_collector.png" alt="Parts Collector"><div class="achievement-info"><h4>Parts Collector</h4><p>Collect all tuning parts of a vehicle</p></div></div>
+                <div class="achievement"><img class="achievement-badge" src="badges/tuning_101.png" alt="Tuning 101"><div class="achievement-info"><h4>Tuning 101</h4><p>Upgrade a part to level 2</p></div></div>
+                <div class="achievement"><img class="achievement-badge" src="badges/tuning_expert.png" alt="Tuning Expert"><div class="achievement-info"><h4>Tuning Expert</h4><p>Upgrade a part to level 5</p></div></div>
+                <div class="achievement"><img class="achievement-badge" src="badges/tuning_master.png" alt="Tuning Master"><div class="achievement-info"><h4>Tuning Master</h4><p>Upgrade a part to level 10</p></div></div>
+                <div class="achievement"><img class="achievement-badge" src="badges/tuning_legend.png" alt="Tuning Legend"><div class="achievement-info"><h4>Tuning Legend</h4><p>Upgrade a part to level 15</p></div></div>
             </div>
-            <div class="achievement">
-                <div class="achievement-icon achievement-icon--special">&#128640;</div>
-                <div class="achievement-info">
-                    <h4>Garage Power 12,449</h4>
-                    <p>33/34 vehicles owned — 1,175/1,740 customizations found</p>
-                </div>
+        </div>
+
+        <!-- Adventure Ranks -->
+        <div class="achievements-category reveal">
+            <h3 class="achievements-category-title">Adventure Ranks</h3>
+            <div class="achievements-list">
+                <div class="achievement"><img class="achievement-badge" src="badges/first_steps.png" alt="First Steps"><div class="achievement-info"><h4>First Steps</h4><p>Reach Wanderer Scout</p></div></div>
+                <div class="achievement"><img class="achievement-badge" src="badges/timbeeeeeeeeeer.png" alt="Timbeeeeeeeeeer"><div class="achievement-info"><h4>Timbeeeeeeeeeer</h4><p>Reach Wanderer Second-Class</p></div></div>
+                <div class="achievement"><img class="achievement-badge" src="badges/bright_lights.png" alt="Bright Lights, City Lights"><div class="achievement-info"><h4>Bright Lights, City Lights</h4><p>Reach Wanderer First-Class</p></div></div>
+                <div class="achievement"><img class="achievement-badge" src="badges/who_needs_air.png" alt="Who Needs Air?"><div class="achievement-info"><h4>Who Needs Air?</h4><p>Reach Explorer Scout</p></div></div>
+                <div class="achievement"><img class="achievement-badge" src="badges/summit_or_plummet.png" alt="Summit or Plummet"><div class="achievement-info"><h4>Summit or Plummet</h4><p>Reach Explorer Second-Class</p></div></div>
+                <div class="achievement"><img class="achievement-badge" src="badges/take_deep_breath.png" alt="Take a Deep Breath"><div class="achievement-info"><h4>Take a Deep Breath</h4><p>Reach Explorer First-Class</p></div></div>
+                <div class="achievement"><img class="achievement-badge" src="badges/cold_start.png" alt="Cold Start"><div class="achievement-info"><h4>Cold Start</h4><p>Reach Trailblazer Scout</p></div></div>
+                <div class="achievement"><img class="achievement-badge" src="badges/minecart_sequence.png" alt="Minecart Sequence"><div class="achievement-info"><h4>Minecart Sequence</h4><p>Reach Trailblazer Second-Class</p></div></div>
+                <div class="achievement"><img class="achievement-badge" src="badges/road_leads_desert.png" alt="My Road Leads into The Desert"><div class="achievement-info"><h4>My Road Leads into The Desert</h4><p>Reach Trailblazer First-Class</p></div></div>
+                <div class="achievement"><img class="achievement-badge" src="badges/dont_like_sand.png" alt="I Don't Like Sand"><div class="achievement-info"><h4>I Don't Like Sand</h4><p>Reach Ranger Scout</p></div></div>
+                <div class="achievement"><img class="achievement-badge" src="badges/born_on_bog.png" alt="Born on the Bog"><div class="achievement-info"><h4>Born on the Bog</h4><p>Reach Ranger Second-Class</p></div></div>
+                <div class="achievement"><img class="achievement-badge" src="badges/paleontologist.png" alt="Paleontologist Parking"><div class="achievement-info"><h4>Paleontologist Parking</h4><p>Reach Ranger First-Class</p></div></div>
+                <div class="achievement"><img class="achievement-badge" src="badges/days_since_accident.png" alt="Days Since Last Accident: 0"><div class="achievement-info"><h4>Days Since Last Accident: 0</h4><p>Reach Vanguard Scout</p></div></div>
+                <div class="achievement"><img class="achievement-badge" src="badges/mycoforestry.png" alt="Mycoforestry"><div class="achievement-info"><h4>Mycoforestry</h4><p>Reach Vanguard Second-Class</p></div></div>
+                <div class="achievement"><img class="achievement-badge" src="badges/must_be_fast.png" alt="You Must Be This Fast to Ride"><div class="achievement-info"><h4>You Must Be This Fast to Ride</h4><p>Reach Vanguard First-Class</p></div></div>
+                <div class="achievement"><img class="achievement-badge" src="badges/conqueror_of_canyons.png" alt="Conqueror of Canyons"><div class="achievement-info"><h4>Conqueror of Canyons</h4><p>Reach Canyoneer</p></div></div>
             </div>
         </div>
     </section>
