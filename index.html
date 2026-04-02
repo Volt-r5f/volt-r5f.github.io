@@ -903,7 +903,7 @@
                 <div class="stat-icon">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--neon-blue)" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
                 </div>
-                <div class="stat-value" data-target="121838736" data-suffix="m">0</div>
+                <div class="stat-value" data-target="122" data-formatted="121.8M m">0</div>
                 <div class="stat-label">Total Distance</div>
             </div>
             <div class="stat-card">
@@ -946,7 +946,7 @@
                     <div class="stat-icon">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--neon-blue)" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
                     </div>
-                    <div class="stat-value" data-target="3088903">0</div>
+                    <div class="stat-value" data-target="3" data-formatted="3.09M">0</div>
                     <div class="stat-label">Cup Points</div>
                 </div>
                 <div class="stat-card">
@@ -1204,13 +1204,14 @@
                     const el = entry.target;
                     const target = parseInt(el.getAttribute('data-target'));
                     const suffix = el.getAttribute('data-suffix') || '';
+                    const formatted = el.getAttribute('data-formatted');
                     let current = 0;
                     const steps = 60;
                     const increment = target / steps;
                     const timer = setInterval(() => {
                         current += increment;
                         if (current >= target) {
-                            el.textContent = target.toLocaleString() + suffix;
+                            el.textContent = formatted || (target.toLocaleString() + suffix);
                             clearInterval(timer);
                         } else {
                             el.textContent = Math.floor(current).toLocaleString() + suffix;
