@@ -506,9 +506,11 @@
             border-bottom: 1px solid rgba(176, 0, 255, 0.2);
         }
 
-        /* ── 3-column featured stats ── */
-        .stats-grid--three {
-            grid-template-columns: repeat(3, 1fr);
+        /* ── 2-column featured stats ── */
+        .stats-grid--featured {
+            grid-template-columns: repeat(2, 1fr);
+            max-width: 700px;
+            margin: 0 auto;
         }
 
         .stats-grid--one {
@@ -552,7 +554,7 @@
         }
 
         @media (max-width: 768px) {
-            .stats-grid--three {
+            .stats-grid--featured {
                 grid-template-columns: 1fr;
             }
             .stats-grid--one {
@@ -863,14 +865,14 @@
             <h2 class="section-title">Gaming <span>Stats</span></h2>
             <div class="divider"></div>
         </div>
-        <!-- 3 Featured Stats (always visible) -->
-        <div class="stats-grid stats-grid--three reveal">
+        <!-- 4 Featured Stats (2x2 grid, always visible) -->
+        <div class="stats-grid stats-grid--featured reveal">
             <div class="stat-card">
                 <div class="stat-icon">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--neon-blue)" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--neon-blue)" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                 </div>
-                <div class="stat-value" data-target="1427">0</div>
-                <div class="stat-label">Best Win Streak</div>
+                <div class="stat-value" data-target="3500" data-suffix="+">0</div>
+                <div class="stat-label">Hours Played</div>
             </div>
             <div class="stat-card">
                 <div class="stat-icon">
@@ -878,6 +880,13 @@
                 </div>
                 <div class="stat-value" data-target="121838736" data-suffix="m">0</div>
                 <div class="stat-label">Total Distance</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--neon-blue)" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+                </div>
+                <div class="stat-value" data-target="1427">0</div>
+                <div class="stat-label">Best Win Streak</div>
             </div>
             <div class="stat-card">
                 <div class="stat-icon">
@@ -1009,17 +1018,6 @@
                 </div>
             </div>
 
-            <!-- General -->
-            <h3 class="stats-category-title">General</h3>
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--neon-blue)" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                    </div>
-                    <div class="stat-value" data-target="3500" data-suffix="+">0</div>
-                    <div class="stat-label">Hours Played</div>
-                </div>
-            </div>
         </div>
     </section>
 
@@ -1198,7 +1196,7 @@
             });
         }, { threshold: 0.5 });
         // Only observe the 3 featured stats initially (not the hidden ones)
-        document.querySelectorAll('.stats-grid--three .stat-value').forEach(el => statsObserver.observe(el));
+        document.querySelectorAll('.stats-grid--featured .stat-value').forEach(el => statsObserver.observe(el));
 
         // Show All Stats toggle
         const showAllBtn = document.getElementById('showAllStats');
