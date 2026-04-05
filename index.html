@@ -546,6 +546,7 @@
 
         .stat-icon:has(img) {
             background: none;
+            overflow: visible;
         }
 
         .stats-grid--one {
@@ -1025,7 +1026,7 @@
             <div class="stats-grid">
                 <div class="stat-card">
                     <div class="stat-icon">
-                        <img src="icons/events_joined.png?v=2" alt="Events Joined" style="width: 150%; height: 150%; object-fit: contain;">
+                        <img src="icons/events_joined.png?v=3" alt="Events Joined" style="width: 75px; height: 75px; object-fit: contain;">
                     </div>
                     <div class="stat-value" data-target="370">0</div>
                     <div class="stat-label">Events Joined</div>
@@ -1207,26 +1208,48 @@
         }, { threshold: 0.15 });
         revealElements.forEach(el => observer.observe(el));
 
-        // Animated stat counters
+        // Animated stat counters (using requestAnimationFrame for performance)
+        const activeCounters = [];
+        let animating = false;
+
+        function animateCounters(timestamp) {
+            let allDone = true;
+            for (let i = activeCounters.length - 1; i >= 0; i--) {
+                const c = activeCounters[i];
+                if (!c.startTime) c.startTime = timestamp;
+                const progress = Math.min((timestamp - c.startTime) / 1500, 1); // 1.5s duration
+                const eased = 1 - Math.pow(1 - progress, 3); // ease-out cubic
+                const current = Math.floor(c.target * eased);
+                if (progress >= 1) {
+                    c.el.textContent = c.formatted || (c.target.toLocaleString() + c.suffix);
+                    activeCounters.splice(i, 1);
+                } else {
+                    c.el.textContent = current.toLocaleString() + c.suffix;
+                    allDone = false;
+                }
+            }
+            if (activeCounters.length > 0) {
+                requestAnimationFrame(animateCounters);
+            } else {
+                animating = false;
+            }
+        }
+
         const statsObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     const el = entry.target;
-                    const target = parseInt(el.getAttribute('data-target'));
-                    const suffix = el.getAttribute('data-suffix') || '';
-                    const formatted = el.getAttribute('data-formatted');
-                    let current = 0;
-                    const steps = 60;
-                    const increment = target / steps;
-                    const timer = setInterval(() => {
-                        current += increment;
-                        if (current >= target) {
-                            el.textContent = formatted || (target.toLocaleString() + suffix);
-                            clearInterval(timer);
-                        } else {
-                            el.textContent = Math.floor(current).toLocaleString() + suffix;
-                        }
-                    }, 25);
+                    activeCounters.push({
+                        el,
+                        target: parseInt(el.getAttribute('data-target')),
+                        suffix: el.getAttribute('data-suffix') || '',
+                        formatted: el.getAttribute('data-formatted'),
+                        startTime: null
+                    });
+                    if (!animating) {
+                        animating = true;
+                        requestAnimationFrame(animateCounters);
+                    }
                     statsObserver.unobserve(el);
                 }
             });
