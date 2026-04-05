@@ -444,8 +444,8 @@
             padding: 2rem;
             text-align: center;
             position: relative;
-            overflow: hidden;
-            transition: border-color 0.3s, box-shadow 0.3s;
+            overflow: visible;
+            z-index: 0;
         }
 
         .hidden-stats .stat-card {
@@ -459,35 +459,48 @@
         .stat-card::after {
             content: '';
             position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(
-                45deg,
-                transparent 40%,
-                rgba(0, 240, 255, 0.08) 45%,
-                rgba(0, 240, 255, 0.15) 50%,
-                rgba(0, 240, 255, 0.08) 55%,
-                transparent 60%
+            inset: -2px;
+            border-radius: 18px;
+            padding: 2px;
+            background: conic-gradient(
+                from var(--shine-angle, 0deg),
+                transparent 0%,
+                transparent 30%,
+                rgba(0, 240, 255, 0.6) 40%,
+                rgba(180, 100, 255, 0.6) 50%,
+                rgba(0, 240, 255, 0.6) 60%,
+                transparent 70%,
+                transparent 100%
             );
-            transform: translateX(-100%);
-            transition: none;
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0;
             pointer-events: none;
+            z-index: -1;
         }
 
-        .stat-card:hover::after {
-            animation: shimmer 1.2s ease forwards;
+        .stat-card.shining::after {
+            opacity: 1;
+            animation: border-spin 1.5s linear forwards;
         }
 
-        .stat-card:hover {
-            border-color: rgba(0, 240, 255, 0.4);
-            box-shadow: 0 0 20px rgba(0, 240, 255, 0.15), 0 0 40px rgba(0, 240, 255, 0.05);
+        .stat-card.shining {
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.2), 0 0 30px rgba(0, 240, 255, 0.1);
         }
 
-        @keyframes shimmer {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(100%); }
+        @keyframes border-spin {
+            0% { --shine-angle: 0deg; opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { --shine-angle: 360deg; opacity: 0; }
+        }
+
+        @property --shine-angle {
+            syntax: '<angle>';
+            initial-value: 0deg;
+            inherits: false;
         }
 
         .stat-card::before {
@@ -1310,6 +1323,17 @@
                     statsObserver.observe(el);
                 });
             }
+        });
+        // Shining border effect on hover - continues until animation ends
+        document.querySelectorAll('.stat-card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                if (!card.classList.contains('shining')) {
+                    card.classList.add('shining');
+                    card.addEventListener('animationend', () => {
+                        card.classList.remove('shining');
+                    }, { once: true });
+                }
+            });
         });
     </script>
 </body>
