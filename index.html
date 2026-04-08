@@ -1353,72 +1353,57 @@
                 }
             });
         });
-        // Canvas-based tap/drag glow effect (high performance)
-        const glowCanvas = document.createElement('canvas');
-        glowCanvas.style.cssText = 'position:fixed;inset:0;pointer-events:none;z-index:9999;';
-        document.body.appendChild(glowCanvas);
-        const ctx = glowCanvas.getContext('2d');
-        const glows = [];
-        let glowAnimating = false;
+        // Glow effect using pre-created DOM pool (fast + compatible)
+        const glowContainer = document.createElement('div');
+        glowContainer.style.cssText = 'position:fixed;inset:0;pointer-events:none;z-index:9999;overflow:hidden;';
+        document.body.appendChild(glowContainer);
 
-        function resizeGlowCanvas() {
-            glowCanvas.width = window.innerWidth;
-            glowCanvas.height = window.innerHeight;
-        }
-        resizeGlowCanvas();
-        window.addEventListener('resize', resizeGlowCanvas);
-
-        function addGlow(x, y, maxR, life) {
-            glows.push({ x, y, maxR, life, maxLife: life, born: performance.now() });
-            if (!glowAnimating) {
-                glowAnimating = true;
-                requestAnimationFrame(drawGlows);
-            }
+        // Pre-create pool of 30 glow elements
+        const pool = [];
+        const POOL_SIZE = 30;
+        let poolIndex = 0;
+        for (let i = 0; i < POOL_SIZE; i++) {
+            const el = document.createElement('div');
+            el.style.cssText = 'position:absolute;border-radius:50%;pointer-events:none;opacity:0;will-change:transform,opacity;background:radial-gradient(circle,rgba(0,240,255,0.4) 0%,rgba(180,100,255,0.15) 40%,rgba(0,0,0,0) 70%);';
+            glowContainer.appendChild(el);
+            pool.push(el);
         }
 
-        function drawGlows(now) {
-            ctx.clearRect(0, 0, glowCanvas.width, glowCanvas.height);
-            for (let i = glows.length - 1; i >= 0; i--) {
-                const g = glows[i];
-                const elapsed = now - g.born;
-                const progress = Math.min(elapsed / g.life, 1);
-                if (progress >= 1) { glows.splice(i, 1); continue; }
-                const r = g.maxR * progress;
-                const alpha = 0.35 * (1 - progress);
-                const r2 = Math.max(r, 0.1);
-                const grad = ctx.createRadialGradient(g.x, g.y, 0, g.x, g.y, r2);
-                grad.addColorStop(0, `rgba(0, 240, 255, ${alpha})`);
-                grad.addColorStop(0.4, `rgba(180, 100, 255, ${alpha * 0.4})`);
-                grad.addColorStop(1, `rgba(0, 240, 255, 0)`);
-                ctx.fillStyle = grad;
-                ctx.beginPath();
-                ctx.arc(g.x, g.y, r, 0, Math.PI * 2);
-                ctx.fill();
-            }
-            if (glows.length > 0) {
-                requestAnimationFrame(drawGlows);
-            } else {
-                glowAnimating = false;
-            }
+        function fireGlow(x, y, size) {
+            const el = pool[poolIndex % POOL_SIZE];
+            poolIndex++;
+            el.style.width = size + 'px';
+            el.style.height = size + 'px';
+            el.style.left = (x - size / 2) + 'px';
+            el.style.top = (y - size / 2) + 'px';
+            el.style.opacity = '0';
+            // Force reflow then animate
+            void el.offsetWidth;
+            el.style.transition = 'opacity 0.4s ease-out';
+            el.style.opacity = '0.8';
+            setTimeout(() => {
+                el.style.transition = 'opacity 0.3s ease-out';
+                el.style.opacity = '0';
+            }, 100);
         }
 
         document.addEventListener('click', (e) => {
-            addGlow(e.clientX, e.clientY, 100, 500);
+            fireGlow(e.clientX, e.clientY, 150);
         });
 
         document.addEventListener('mousemove', (e) => {
             if (e.buttons !== 1) return;
-            addGlow(e.clientX, e.clientY, 60, 350);
+            fireGlow(e.clientX, e.clientY, 80);
         });
 
         document.addEventListener('touchstart', (e) => {
             const t = e.touches[0];
-            addGlow(t.clientX, t.clientY, 100, 500);
+            fireGlow(t.clientX, t.clientY, 150);
         }, { passive: true });
 
         document.addEventListener('touchmove', (e) => {
             const t = e.touches[0];
-            addGlow(t.clientX, t.clientY, 60, 350);
+            fireGlow(t.clientX, t.clientY, 80);
         }, { passive: true });
     </script>
 </body>
