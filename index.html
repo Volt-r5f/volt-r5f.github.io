@@ -1380,18 +1380,11 @@
             }
         }
 
-        function addBurst(x, y) {
-            const now = performance.now();
-            for (let i = 0; i < 12; i++) {
-                const angle = (Math.PI * 2 / 12) * i;
-                const len = 30 + Math.random() * 20;
-                segments.push({
-                    x1: x, y1: y,
-                    x2: x + Math.cos(angle) * len,
-                    y2: y + Math.sin(angle) * len,
-                    born: now, life: 800
-                });
-            }
+        // Dots for taps
+        const dots = [];
+
+        function addDot(x, y) {
+            dots.push({ x, y, born: performance.now(), life: 800 });
             if (!drawAnimating) {
                 drawAnimating = true;
                 requestAnimationFrame(drawFrame);
@@ -1400,13 +1393,25 @@
 
         function drawFrame(now) {
             dCtx.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
+
+            // Draw line segments
             for (let i = segments.length - 1; i >= 0; i--) {
                 const s = segments[i];
                 const age = now - s.born;
                 if (age >= s.life) { segments.splice(i, 1); continue; }
                 const alpha = 1 - (age / s.life);
-                const width = 4 * alpha + 1;
+                const width = 12 * alpha + 2;
 
+                // Outer glow
+                dCtx.beginPath();
+                dCtx.moveTo(s.x1, s.y1);
+                dCtx.lineTo(s.x2, s.y2);
+                dCtx.strokeStyle = `rgba(180, 100, 255, ${alpha * 0.4})`;
+                dCtx.lineWidth = width + 16;
+                dCtx.lineCap = 'round';
+                dCtx.stroke();
+
+                // Main line
                 dCtx.beginPath();
                 dCtx.moveTo(s.x1, s.y1);
                 dCtx.lineTo(s.x2, s.y2);
@@ -1415,16 +1420,37 @@
                 dCtx.lineCap = 'round';
                 dCtx.stroke();
 
-                // Outer glow
+                // Bright core
                 dCtx.beginPath();
                 dCtx.moveTo(s.x1, s.y1);
                 dCtx.lineTo(s.x2, s.y2);
-                dCtx.strokeStyle = `rgba(180, 100, 255, ${alpha * 0.3})`;
-                dCtx.lineWidth = width + 8;
+                dCtx.strokeStyle = `rgba(255, 255, 255, ${alpha * 0.5})`;
+                dCtx.lineWidth = width * 0.3;
                 dCtx.lineCap = 'round';
                 dCtx.stroke();
             }
-            if (segments.length > 0) {
+
+            // Draw tap dots
+            for (let i = dots.length - 1; i >= 0; i--) {
+                const d = dots[i];
+                const age = now - d.born;
+                if (age >= d.life) { dots.splice(i, 1); continue; }
+                const alpha = 1 - (age / d.life);
+                const r = 30 + (1 - alpha) * 20;
+
+                // Outer glow
+                const grad = dCtx.createRadialGradient(d.x, d.y, 0, d.x, d.y, r);
+                grad.addColorStop(0, `rgba(255, 255, 255, ${alpha * 0.6})`);
+                grad.addColorStop(0.2, `rgba(0, 240, 255, ${alpha * 0.7})`);
+                grad.addColorStop(0.5, `rgba(180, 100, 255, ${alpha * 0.3})`);
+                grad.addColorStop(1, `rgba(0, 0, 0, 0)`);
+                dCtx.fillStyle = grad;
+                dCtx.beginPath();
+                dCtx.arc(d.x, d.y, r, 0, Math.PI * 2);
+                dCtx.fill();
+            }
+
+            if (segments.length > 0 || dots.length > 0) {
                 requestAnimationFrame(drawFrame);
             } else {
                 drawAnimating = false;
@@ -1449,9 +1475,9 @@
             lastPos = null;
         });
 
-        // Click burst
+        // Click dot
         document.addEventListener('click', (e) => {
-            addBurst(e.clientX, e.clientY);
+            addDot(e.clientX, e.clientY);
         });
 
         // Touch events
@@ -1459,7 +1485,7 @@
         document.addEventListener('touchstart', (e) => {
             const t = e.touches[0];
             touchLastPos = { x: t.clientX, y: t.clientY };
-            addBurst(t.clientX, t.clientY);
+            addDot(t.clientX, t.clientY);
         }, { passive: true });
 
         document.addEventListener('touchmove', (e) => {
