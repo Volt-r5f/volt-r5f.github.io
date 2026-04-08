@@ -1353,6 +1353,60 @@
                 }
             });
         });
+        // Tap/click glow effect
+        const skipSelectors = '.stat-card, .achievement, .btn, .social-card, a, button, img, h1, h2, h3, h4, p, span, .nav-links, .hero-content, .about-text, .about-visual, .show-all-btn';
+
+        document.addEventListener('click', (e) => {
+            // Don't glow if clicking on interactive/content elements
+            if (e.target.closest(skipSelectors)) return;
+
+            const glow = document.createElement('div');
+            glow.style.cssText = `
+                position: fixed;
+                left: ${e.clientX}px;
+                top: ${e.clientY}px;
+                width: 0;
+                height: 0;
+                border-radius: 50%;
+                background: radial-gradient(circle, rgba(0, 240, 255, 0.35) 0%, rgba(180, 100, 255, 0.15) 40%, transparent 70%);
+                transform: translate(-50%, -50%);
+                pointer-events: none;
+                z-index: 9999;
+                animation: tapGlow 0.8s ease-out forwards;
+            `;
+            document.body.appendChild(glow);
+            glow.addEventListener('animationend', () => glow.remove());
+        });
+
+        // Also support touch
+        document.addEventListener('touchstart', (e) => {
+            const touch = e.touches[0];
+            if (e.target.closest(skipSelectors)) return;
+
+            const glow = document.createElement('div');
+            glow.style.cssText = `
+                position: fixed;
+                left: ${touch.clientX}px;
+                top: ${touch.clientY}px;
+                width: 0;
+                height: 0;
+                border-radius: 50%;
+                background: radial-gradient(circle, rgba(0, 240, 255, 0.35) 0%, rgba(180, 100, 255, 0.15) 40%, transparent 70%);
+                transform: translate(-50%, -50%);
+                pointer-events: none;
+                z-index: 9999;
+                animation: tapGlow 0.8s ease-out forwards;
+            `;
+            document.body.appendChild(glow);
+            glow.addEventListener('animationend', () => glow.remove());
+        }, { passive: true });
     </script>
+    <style>
+        @keyframes tapGlow {
+            0% { width: 0; height: 0; opacity: 1; }
+            50% { opacity: 0.8; }
+            100% { width: 200px; height: 200px; opacity: 0; }
+        }
+    </style>
 </body>
 </html>
