@@ -1385,10 +1385,11 @@
                 if (progress >= 1) { glows.splice(i, 1); continue; }
                 const r = g.maxR * progress;
                 const alpha = 0.35 * (1 - progress);
-                const grad = ctx.createRadialGradient(g.x, g.y, 0, g.x, g.y, r);
+                const r2 = Math.max(r, 0.1);
+                const grad = ctx.createRadialGradient(g.x, g.y, 0, g.x, g.y, r2);
                 grad.addColorStop(0, `rgba(0, 240, 255, ${alpha})`);
                 grad.addColorStop(0.4, `rgba(180, 100, 255, ${alpha * 0.4})`);
-                grad.addColorStop(1, 'transparent');
+                grad.addColorStop(1, `rgba(0, 240, 255, 0)`);
                 ctx.fillStyle = grad;
                 ctx.beginPath();
                 ctx.arc(g.x, g.y, r, 0, Math.PI * 2);
@@ -1401,27 +1402,21 @@
             }
         }
 
-        const skipSelectors = '.stat-card, .achievement, .btn, .social-card, a, button, img, h1, h2, h3, h4, p, span, .nav-links, .hero-content, .about-text, .about-visual, .show-all-btn';
-
         document.addEventListener('click', (e) => {
-            if (e.target.closest(skipSelectors)) return;
             addGlow(e.clientX, e.clientY, 100, 500);
         });
 
         document.addEventListener('mousemove', (e) => {
             if (e.buttons !== 1) return;
-            if (e.target.closest(skipSelectors)) return;
             addGlow(e.clientX, e.clientY, 60, 350);
         });
 
         document.addEventListener('touchstart', (e) => {
             const t = e.touches[0];
-            if (e.target.closest(skipSelectors)) return;
             addGlow(t.clientX, t.clientY, 100, 500);
         }, { passive: true });
 
         document.addEventListener('touchmove', (e) => {
-            if (e.target.closest(skipSelectors)) return;
             const t = e.touches[0];
             addGlow(t.clientX, t.clientY, 60, 350);
         }, { passive: true });
