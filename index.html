@@ -1353,18 +1353,16 @@
                 }
             });
         });
-        // Tap/click glow effect
+        // Tap/click/drag glow effect
         const skipSelectors = '.stat-card, .achievement, .btn, .social-card, a, button, img, h1, h2, h3, h4, p, span, .nav-links, .hero-content, .about-text, .about-visual, .show-all-btn';
 
-        document.addEventListener('click', (e) => {
-            // Don't glow if clicking on interactive/content elements
-            if (e.target.closest(skipSelectors)) return;
-
+        function createGlow(x, y, size, duration) {
             const glow = document.createElement('div');
+            glow.className = 'tap-glow';
             glow.style.cssText = `
                 position: fixed;
-                left: ${e.clientX}px;
-                top: ${e.clientY}px;
+                left: ${x}px;
+                top: ${y}px;
                 width: 0;
                 height: 0;
                 border-radius: 50%;
@@ -1372,40 +1370,51 @@
                 transform: translate(-50%, -50%);
                 pointer-events: none;
                 z-index: 9999;
-                animation: tapGlow 0.8s ease-out forwards;
+                --glow-size: ${size}px;
+                animation: tapGlow ${duration}s ease-out forwards;
             `;
             document.body.appendChild(glow);
             glow.addEventListener('animationend', () => glow.remove());
+        }
+
+        // Click glow
+        document.addEventListener('click', (e) => {
+            if (e.target.closest(skipSelectors)) return;
+            createGlow(e.clientX, e.clientY, 200, 0.8);
         });
 
-        // Also support touch
+        // Mouse drag glow - spawn smaller glows as you move
+        let lastGlowTime = 0;
+        document.addEventListener('mousemove', (e) => {
+            if (e.buttons !== 1) return; // only when mouse button held
+            if (e.target.closest(skipSelectors)) return;
+            const now = Date.now();
+            if (now - lastGlowTime < 50) return; // throttle to every 50ms
+            lastGlowTime = now;
+            createGlow(e.clientX, e.clientY, 120, 0.6);
+        });
+
+        // Touch drag glow
         document.addEventListener('touchstart', (e) => {
             const touch = e.touches[0];
             if (e.target.closest(skipSelectors)) return;
+            createGlow(touch.clientX, touch.clientY, 200, 0.8);
+        }, { passive: true });
 
-            const glow = document.createElement('div');
-            glow.style.cssText = `
-                position: fixed;
-                left: ${touch.clientX}px;
-                top: ${touch.clientY}px;
-                width: 0;
-                height: 0;
-                border-radius: 50%;
-                background: radial-gradient(circle, rgba(0, 240, 255, 0.35) 0%, rgba(180, 100, 255, 0.15) 40%, transparent 70%);
-                transform: translate(-50%, -50%);
-                pointer-events: none;
-                z-index: 9999;
-                animation: tapGlow 0.8s ease-out forwards;
-            `;
-            document.body.appendChild(glow);
-            glow.addEventListener('animationend', () => glow.remove());
+        document.addEventListener('touchmove', (e) => {
+            if (e.target.closest(skipSelectors)) return;
+            const now = Date.now();
+            if (now - lastGlowTime < 50) return;
+            lastGlowTime = now;
+            const touch = e.touches[0];
+            createGlow(touch.clientX, touch.clientY, 120, 0.6);
         }, { passive: true });
     </script>
     <style>
         @keyframes tapGlow {
             0% { width: 0; height: 0; opacity: 1; }
             50% { opacity: 0.8; }
-            100% { width: 200px; height: 200px; opacity: 0; }
+            100% { width: var(--glow-size, 200px); height: var(--glow-size, 200px); opacity: 0; }
         }
     </style>
 </body>
