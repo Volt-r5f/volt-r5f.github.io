@@ -1353,20 +1353,31 @@
                 }
             });
         });
-        // Glow effect using pre-created DOM pool (fast + compatible)
+        // Glow + sparkle effect using pre-created DOM pool
         const glowContainer = document.createElement('div');
         glowContainer.style.cssText = 'position:fixed;inset:0;pointer-events:none;z-index:9999;overflow:hidden;';
         document.body.appendChild(glowContainer);
 
-        // Pre-create pool of 30 glow elements
+        // Glow pool
         const pool = [];
         const POOL_SIZE = 30;
         let poolIndex = 0;
         for (let i = 0; i < POOL_SIZE; i++) {
             const el = document.createElement('div');
-            el.style.cssText = 'position:absolute;border-radius:50%;pointer-events:none;opacity:0;will-change:transform,opacity;background:radial-gradient(circle,rgba(0,240,255,0.4) 0%,rgba(180,100,255,0.15) 40%,rgba(0,0,0,0) 70%);';
+            el.style.cssText = 'position:absolute;border-radius:50%;pointer-events:none;opacity:0;will-change:transform,opacity;background:radial-gradient(circle,rgba(0,240,255,0.7) 0%,rgba(0,240,255,0.5) 15%,rgba(180,100,255,0.3) 40%,rgba(0,0,0,0) 70%);box-shadow:0 0 15px rgba(0,240,255,0.5),0 0 30px rgba(180,100,255,0.2);';
             glowContainer.appendChild(el);
             pool.push(el);
+        }
+
+        // Sparkle pool
+        const sparklePool = [];
+        const SPARKLE_SIZE = 60;
+        let sparkleIndex = 0;
+        for (let i = 0; i < SPARKLE_SIZE; i++) {
+            const el = document.createElement('div');
+            el.style.cssText = 'position:absolute;width:4px;height:4px;border-radius:50%;pointer-events:none;opacity:0;will-change:transform,opacity;background:white;box-shadow:0 0 6px rgba(0,240,255,1),0 0 12px rgba(0,240,255,0.5);';
+            glowContainer.appendChild(el);
+            sparklePool.push(el);
         }
 
         function fireGlow(x, y, size) {
@@ -1376,34 +1387,62 @@
             el.style.height = size + 'px';
             el.style.left = (x - size / 2) + 'px';
             el.style.top = (y - size / 2) + 'px';
+            el.style.transform = 'scale(0.3)';
             el.style.opacity = '0';
-            // Force reflow then animate
             void el.offsetWidth;
-            el.style.transition = 'opacity 0.4s ease-out';
-            el.style.opacity = '0.8';
+            el.style.transition = 'opacity 0.15s ease-out, transform 0.3s ease-out';
+            el.style.opacity = '1';
+            el.style.transform = 'scale(1)';
             setTimeout(() => {
-                el.style.transition = 'opacity 0.3s ease-out';
+                el.style.transition = 'opacity 0.4s ease-out';
                 el.style.opacity = '0';
-            }, 100);
+            }, 150);
+
+            // Spawn sparkles
+            const count = size > 100 ? 5 : 3;
+            for (let i = 0; i < count; i++) {
+                const sp = sparklePool[sparkleIndex % SPARKLE_SIZE];
+                sparkleIndex++;
+                const angle = Math.random() * Math.PI * 2;
+                const dist = 10 + Math.random() * 30;
+                const sx = x + Math.cos(angle) * dist;
+                const sy = y + Math.sin(angle) * dist;
+                const endX = x + Math.cos(angle) * (dist + 20 + Math.random() * 30);
+                const endY = y + Math.sin(angle) * (dist + 20 + Math.random() * 30);
+                sp.style.left = sx + 'px';
+                sp.style.top = sy + 'px';
+                sp.style.opacity = '0';
+                sp.style.transform = 'scale(1)';
+                void sp.offsetWidth;
+                sp.style.transition = 'opacity 0.1s ease-out, left 0.4s ease-out, top 0.4s ease-out, transform 0.4s ease-out';
+                sp.style.opacity = '1';
+                sp.style.left = endX + 'px';
+                sp.style.top = endY + 'px';
+                sp.style.transform = 'scale(0)';
+                setTimeout(() => {
+                    sp.style.transition = 'opacity 0.2s ease-out';
+                    sp.style.opacity = '0';
+                }, 200);
+            }
         }
 
         document.addEventListener('click', (e) => {
-            fireGlow(e.clientX, e.clientY, 150);
+            fireGlow(e.clientX, e.clientY, 180);
         });
 
         document.addEventListener('mousemove', (e) => {
             if (e.buttons !== 1) return;
-            fireGlow(e.clientX, e.clientY, 80);
+            fireGlow(e.clientX, e.clientY, 100);
         });
 
         document.addEventListener('touchstart', (e) => {
             const t = e.touches[0];
-            fireGlow(t.clientX, t.clientY, 150);
+            fireGlow(t.clientX, t.clientY, 180);
         }, { passive: true });
 
         document.addEventListener('touchmove', (e) => {
             const t = e.touches[0];
-            fireGlow(t.clientX, t.clientY, 80);
+            fireGlow(t.clientX, t.clientY, 100);
         }, { passive: true });
     </script>
 </body>
